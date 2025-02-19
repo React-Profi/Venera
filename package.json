@@ -1,25 +1,29 @@
 {
-  "name": "venera",
-  "version": "1.0.0",
-  "description": "it`s my last This is my last attempt to have a normal life.",
-  "homepage": "https://github.com/React-Profi/Venera#readme",
-  "bugs": {
-    "url": "https://github.com/React-Profi/Venera/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/React-Profi/Venera.git"
-  },
-  "license": "ISC",
-  "author": "amoteo",
-  "type": "commonjs",
-  "main": "src/ActionScript.ts",
-  "scripts": {
-    "start": "ts-node src/ActionScript.ts"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.50.1",
-    "@types/node": "^22.13.4",
-    "ts-node": "^10.9.2"
-  }
+	"name": "venera",
+	"version": "1.0.0",
+	"description": "it`s my last This is my last attempt to have a normal life.",
+	"homepage": "https://github.com/React-Profi/Venera#readme",
+	"bugs": {
+		"url": "https://github.com/React-Profi/Venera/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/React-Profi/Venera.git"
+	},
+	"license": "ISC",
+	"author": "amoteo",
+	"type": "module",
+	"main": "src/ActionScript.ts",
+	"scripts": {
+		"build": "tsc",
+		"start": "npm run build && node dist/ActionScript.js",
+		"example": "tsx examples/ActionScript.ts"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.50.1",
+		"@trivago/prettier-plugin-sort-imports": "^5.2.2",
+		"@types/node": "^22.13.4",
+		"prettier": "^3.5.1",
+		"tsx": "^4.19.3"
+	}
 }
