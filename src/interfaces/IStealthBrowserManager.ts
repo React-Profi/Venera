@@ -1,3 +1,5 @@
+import { Page } from 'playwright';
+
 export interface IStealthBrowserManager {
-	launch(): void; //Page;
+	launch(): Promise<Page>; //Page;
 }

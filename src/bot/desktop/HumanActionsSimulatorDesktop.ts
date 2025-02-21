@@ -1,12 +1,14 @@
+import { Page } from 'playwright';
+
 import { IBotCommand } from '../../interfaces/IBotCommand.js';
 import { IHumanActionsSimulator } from '../../interfaces/IHumanActionsSimulator.js';
 
 export class HumanActionsSimulatorDesktop implements IHumanActionsSimulator {
-	//private _page: void | undefined;
+	private _page: Page;
 	dispatch(botCommand: IBotCommand): void {
-		// Implementation here
+		this._page.screenshot();
 	}
-	HumanActionsSimulatorDesktop(page: void | undefined) {
-		//this._page = page;
+	constructor(page: Page) {
+		this._page = page;
 	}
 }
