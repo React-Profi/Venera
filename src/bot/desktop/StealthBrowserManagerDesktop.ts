@@ -4,6 +4,7 @@ import { BrowserLaunchError } from '../../errors/BrowserLaunchError.js';
 import { IStealthBrowserManager } from '../../interfaces/IStealthBrowserManager.js';
 
 export class StealthBrowserManagerDesktop implements IStealthBrowserManager {
+	close(): void {}
 	//_desktopDevaceLoader: IDevaceLoader;
 	async launch(): Promise<Page> {
 		try {

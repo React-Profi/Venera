@@ -1,9 +1,10 @@
 //import { chromium } from 'playwright';
-import { BotControllerMobile } from '../src/bot/mobile/BotControllerMobile.js';
+import { BotControllerDesktop } from '../src/bot/desktop/BotControllerDesktop.js';
 import { BotCommand } from '../src/commands/BotCommand.js';
 import { IBotController } from '../src/interfaces/IBotController.js';
 
-// Импортируем Playwright (браузер Chromium)
+//✅ Этот код гарантирует, что initialize() вызван перед dispatch().
+//✅ Ошибки логируются, и shutdown() вызывается в любом случае. 🚀
 
 async function main() {
 	/*const browser = await chromium.launch({ headless: false });
@@ -20,10 +21,19 @@ async function main() {
 	});
 	await page.goto('https://example.com');
 */
-	console.log('===========');
-	const botControllerMobile: IBotController = new BotControllerMobile();
+
+	const botControllerDesktop: IBotController = new BotControllerDesktop();
 	const command = new BotCommand('start', { userId: 123 });
-	botControllerMobile.dispatch(command);
+
+	try {
+		await botControllerDesktop.initialize();
+
+		await botControllerDesktop.dispatch(command);
+	} catch (error) {
+		console.error('Ошибка во время выполнения команд:', error);
+	} finally {
+		await botControllerDesktop.shutdown();
+	}
 }
 
 // Запускаем функцию

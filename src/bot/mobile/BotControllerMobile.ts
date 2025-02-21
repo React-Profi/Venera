@@ -7,45 +7,39 @@ import { HumanActionsSimulatorMobile } from './HumanActionsSimulatorMobile.js';
 import { StealthBrowserManagerMobile } from './StealthBrowserManagerMobile.js';
 
 export class BotControllerMobile implements IBotController {
-	private _stealthBrowserManager: IStealthBrowserManager;
+	private _stealthBrowserManager: IStealthBrowserManager | null;
 	private _humanActionsSimulator: IHumanActionsSimulator | null = null;
-	private _initPromise: Promise<void> | null = null;
+	private _initialized: boolean = false;
 
-	constructor(
-		stealthBrowserManager: IStealthBrowserManager = new StealthBrowserManagerMobile()
-	) {
-		this._stealthBrowserManager = stealthBrowserManager;
+	constructor() {
+		this._stealthBrowserManager = new StealthBrowserManagerMobile();
 	}
 
-	private async initialize(): Promise<void> {
-		if (this._initPromise) return this._initPromise;
+	// Инициализация с таймаутом
+	public async initialize(): Promise<void> {
+		if (this._initialized) return;
+		try {
+			await new Promise(res => setTimeout(res, 100)); // Небольшая задержка перед инициализацией
+			const page = await this._launchWithRetries(3, 15000);
+			// Дожидаемся полной загрузки страницы перед созданием симулятора
+			await page.waitForLoadState('load');
+			await page.waitForTimeout(1000);
 
-		this._initPromise = (async () => {
-			try {
-				const page = await this._stealthBrowserManager.launch();
-				this._humanActionsSimulator = new HumanActionsSimulatorMobile(page);
-			} catch (error) {
-				console.warn('Ошибка при запуске браузера:', error);
-				this._initPromise = Promise.reject(error); // Теперь ошибка сохраняется!
-				this._humanActionsSimulator = null;
-				throw error;
-			}
-		})();
-
-		return this._initPromise;
+			this._humanActionsSimulator = new HumanActionsSimulatorMobile(page);
+			this._initialized = true;
+		} catch (error) {
+			this._humanActionsSimulator = null;
+			throw error;
+		}
 	}
 
 	async dispatch(botCommand: IBotCommand): Promise<void> {
-		if (!botCommand) {
-			console.error('Ошибка: передана некорректная команда', botCommand);
+		if (!botCommand || typeof botCommand !== 'object') {
 			return;
 		}
-
-		await this.initialize();
-
 		if (!this._humanActionsSimulator) {
 			throw new Error(
-				'Критическая ошибка: HumanActionsSimulator не был создан после initialize()'
+				'Ошибка: HumanActionsSimulator не инициализирован. Вызовите initialize() перед dispatch().'
 			);
 		}
 
@@ -53,6 +47,53 @@ export class BotControllerMobile implements IBotController {
 			await this._humanActionsSimulator.dispatch(botCommand);
 		} catch (error) {
 			console.error('Ошибка при выполнении команды:', error);
+			throw error;
 		}
+	}
+
+	public async shutdown(): Promise<void> {
+		if (!this._initialized) return;
+
+		try {
+			await this._stealthBrowserManager?.close();
+		} catch (error) {
+			console.error('Ошибка при закрытии браузера:', error);
+		} finally {
+			this._humanActionsSimulator = null;
+			this._stealthBrowserManager = null;
+			this._initialized = false;
+		}
+	}
+
+		private async _launchWithRetries(retries: number, timeout: number): Promise<any> {
+		for (let attempt = 1; attempt <= retries; attempt++) {
+			try {
+				return await this._launchWithTimeout(timeout + attempt * 5000); // Увеличиваем таймаут на 5 секунд с каждой попыткой
+			} catch (error) {
+				console.warn(`Попытка ${attempt} не удалась, увеличиваем таймаут:`, error);
+				if (attempt === retries) throw error;
+			}
+		}
+	}
+
+	private async _launchWithTimeout(timeout: number): Promise<any> {
+		return new Promise((resolve, reject) => {
+			const timer = setTimeout(() => {
+				reject(
+					new Error('Timeout: запуск браузера превысил ' + timeout + ' мс')
+				);
+			}, timeout);
+
+			this._stealthBrowserManager
+				?.launch()
+				.then(page => {
+					clearTimeout(timer);
+					resolve(page);
+				})
+				.catch(error => {
+					clearTimeout(timer);
+					reject(error);
+				});
+		});
 	}
 }

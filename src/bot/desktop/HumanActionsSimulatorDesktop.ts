@@ -10,5 +10,6 @@ export class HumanActionsSimulatorDesktop implements IHumanActionsSimulator {
 	}
 	constructor(page: Page) {
 		this._page = page;
+		console.log('page ' + page);
 	}
 }
