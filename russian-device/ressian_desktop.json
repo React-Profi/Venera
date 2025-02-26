@@ -1,0 +1,25 @@
+{
+	"browser": {
+		"name": "chrome",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.127 Safari/537.36"
+	},
+	"screenResolution": "1920x1080",
+	"os": {
+		"name": "Windows 10",
+		"version": "10.0"
+	},
+	"timezone": "Europe/Moscow",
+	"language": "ru-RU",
+	"hardwareConcurrency": 8,
+	"deviceMemory": 16,
+	"fonts": [
+		"Arial",
+		"Times New Roman",
+		"Calibri",
+		"Verdana",
+		"Courier New",
+		"Georgia",
+		"Tahoma"
+	],
+	"plugins": []
+}

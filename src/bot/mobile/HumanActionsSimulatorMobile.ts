@@ -1,15 +1,14 @@
-import { Page } from 'playwright';
-
-import { IBotCommand } from '../../interfaces/IBotCommand.js';
 import { IHumanActionsSimulator } from '../../interfaces/IHumanActionsSimulator.js';
+import { IBotCommand } from '../../interfaces/dto-interfaces/IBotCommandDTO.js';
+import { IWebSession } from '../../interfaces/dto-interfaces/IWebSessionDTO.js';
 
 export class HumanActionsSimulatorMobile implements IHumanActionsSimulator {
-	private _page: Page;
+	private _webSession: IWebSession;
 	dispatch(botCommand: IBotCommand): void {
-		this._page.screenshot();
+		this._webSession.page.screenshot();
 	}
-	constructor(page: Page) {
-		this._page = page;
-		console.log('page ' + page);
+	constructor(webSession: IWebSession) {
+		this._webSession = webSession;
+		console.log('page ' + this._webSession.page.title());
 	}
 }

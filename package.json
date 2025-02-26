@@ -17,7 +17,8 @@
 	"scripts": {
 		"build": "tsc",
 		"start": "npm run build && node dist/ActionScript.js",
-		"example": "tsx examples/ActionScript.ts"
+		"example": "tsx examples/ActionScript.ts",
+		"test": "npx playwright test && npx playwright show-report"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.50.1",

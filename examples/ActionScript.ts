@@ -1,7 +1,9 @@
 //import { chromium } from 'playwright';
 import { BotControllerDesktop } from '../src/bot/desktop/BotControllerDesktop.js';
-import { BotCommand } from '../src/commands/BotCommand.js';
+import { BotCommand } from '../src/dto/BotCommand.js';
+import { BotCommandType } from '../src/enums/BotCommandType.js';
 import { IBotController } from '../src/interfaces/IBotController.js';
+import { IBotCommandDTO } from '../src/interfaces/dto-interfaces/IBotCommandDTO.js';
 
 //✅ Этот код гарантирует, что initialize() вызван перед dispatch().
 //✅ Ошибки логируются, и shutdown() вызывается в любом случае. 🚀
@@ -23,12 +25,18 @@ async function main() {
 */
 
 	const botControllerDesktop: IBotController = new BotControllerDesktop();
-	const command = new BotCommand('start', { userId: 123 });
-
+	const click: IBotCommandDTO = new BotCommand(BotCommandType.CLICK, {
+		userId: 123
+	});
+	const account_save: IBotCommandDTO = new BotCommand(
+		BotCommandType.ACCOUNT_SAVE
+	);
 	try {
 		await botControllerDesktop.initialize();
 
-		await botControllerDesktop.dispatch(command);
+		await botControllerDesktop.dispatch(click);
+
+		await botControllerDesktop.dispatch(account_save);
 	} catch (error) {
 		console.error('Ошибка во время выполнения команд:', error);
 	} finally {

@@ -1,7 +1,7 @@
-import { IBotCommand } from '../../interfaces/IBotCommand.js';
 import { IBotController } from '../../interfaces/IBotController.js';
 import { IHumanActionsSimulator } from '../../interfaces/IHumanActionsSimulator.js';
 import { IStealthBrowserManager } from '../../interfaces/IStealthBrowserManager.js';
+import { IBotCommand } from '../../interfaces/dto-interfaces/IBotCommandDTO.js';
 
 import { HumanActionsSimulatorMobile } from './HumanActionsSimulatorMobile.js';
 import { StealthBrowserManagerMobile } from './StealthBrowserManagerMobile.js';
@@ -65,12 +65,18 @@ export class BotControllerMobile implements IBotController {
 		}
 	}
 
-		private async _launchWithRetries(retries: number, timeout: number): Promise<any> {
+	private async _launchWithRetries(
+		retries: number,
+		timeout: number
+	): Promise<any> {
 		for (let attempt = 1; attempt <= retries; attempt++) {
 			try {
 				return await this._launchWithTimeout(timeout + attempt * 5000); // Увеличиваем таймаут на 5 секунд с каждой попыткой
 			} catch (error) {
-				console.warn(`Попытка ${attempt} не удалась, увеличиваем таймаут:`, error);
+				console.warn(
+					`Попытка ${attempt} не удалась, увеличиваем таймаут:`,
+					error
+				);
 				if (attempt === retries) throw error;
 			}
 		}

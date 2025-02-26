@@ -1,6 +1,6 @@
-import { Page } from 'playwright';
+import { IWebSession } from './dto-interfaces/IWebSessionDTO.js';
 
 export interface IStealthBrowserManager {
-	launch(): Promise<Page>; //Page;
+	launch(): Promise<IWebSession>;
 	close(): void;
 }

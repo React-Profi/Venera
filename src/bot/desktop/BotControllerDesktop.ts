@@ -1,7 +1,9 @@
-import { IBotCommand } from '../../interfaces/IBotCommand.js';
+import { console } from 'inspector';
+
 import { IBotController } from '../../interfaces/IBotController.js';
 import { IHumanActionsSimulator } from '../../interfaces/IHumanActionsSimulator.js';
 import { IStealthBrowserManager } from '../../interfaces/IStealthBrowserManager.js';
+import { IBotCommandDTO } from '../../interfaces/dto-interfaces/IBotCommandDTO.js';
 
 import { HumanActionsSimulatorDesktop } from './HumanActionsSimulatorDesktop.js';
 import { StealthBrowserManagerDesktop } from './StealthBrowserManagerDesktop.js';
@@ -20,11 +22,11 @@ export class BotControllerDesktop implements IBotController {
 		if (this._initialized) return;
 		try {
 			await new Promise(res => setTimeout(res, 100)); // Небольшая задержка перед инициализацией
-			const page = await this._launchWithRetries(3, 15000);
+			const page = await this._launchWithTimeout(25000);
 			// Дожидаемся полной загрузки страницы перед созданием симулятора
 			await page.waitForLoadState('load');
 			await page.waitForTimeout(1000);
-
+			console.log(await page.title());
 			this._humanActionsSimulator = new HumanActionsSimulatorDesktop(page);
 			this._initialized = true;
 		} catch (error) {
@@ -33,7 +35,7 @@ export class BotControllerDesktop implements IBotController {
 		}
 	}
 
-	async dispatch(botCommand: IBotCommand): Promise<void> {
+	async dispatch(botCommand: IBotCommandDTO): Promise<void> {
 		if (!botCommand || typeof botCommand !== 'object') {
 			return;
 		}

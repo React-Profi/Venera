@@ -1,4 +1,4 @@
-import { IBotCommand } from './IBotCommand.js';
+import { IBotCommand } from './dto-interfaces/IBotCommandDTO.js';
 
 export interface IBotController {
 	dispatch(botCommand: IBotCommand): void;
